@@ -1,5 +1,2 @@
-#############
+%% Assignment 2 Finite State Machines
 
-#Assignment 2 Finite State Machines
-
-#############
