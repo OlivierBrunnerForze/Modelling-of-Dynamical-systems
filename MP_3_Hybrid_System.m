@@ -1,5 +1,2 @@
-#############
+%% Assignment 3 Hybrid System
 
-#Assignment 3 Hybrid System
-
-#############

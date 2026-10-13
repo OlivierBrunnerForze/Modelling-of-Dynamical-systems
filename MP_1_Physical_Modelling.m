@@ -1,5 +1,2 @@
-#############
+%% Question 1 Physical Modelling
 
-#Assignment 1 Physical Modelling
-
-#############
