@@ -87,10 +87,16 @@ for k=1:length(shapes)
     figure('Name','decoupled input response','Position',[100 100 1100 700]);
     
     subplot(2,2,1)
-    plot(Xx(:,1)*1e3, Xy(:,1)*1e3, 'k--', 'LineWidth', 1.0)
+    hP = plot(Xx(:,1)*1e3, Xy(:,1)*1e3, 'k--', 'LineWidth', 1.0);
+    hold on
+    %Plot the start point
+    hS = plot(Xx(1,1)*1e3, Xy(1,1)*1e3, 'go', 'MarkerSize', 8, 'MarkerFaceColor', 'g'); 
+    % Plot the end point
+    hE = plot(Xx(end,1)*1e3, Xy(end,1)*1e3, 'ro', 'MarkerSize', 4, 'MarkerFaceColor', 'r'); 
+    hold off
     axis equal; grid on
     xlabel('x [mm]'); ylabel('y [mm]')
-    legend('decoupled','Location','best')
+    legend([hP hS hE], {'decoupled','start','end'}, 'Location','best')
     title('Tool head path')
     
     subplot(2,2,2)
