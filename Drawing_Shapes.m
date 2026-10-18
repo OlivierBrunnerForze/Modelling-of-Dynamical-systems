@@ -21,14 +21,25 @@ shapes(1).name = 'Ellipse';
 shapes(1).X    = 0.05*cos(w*tau);
 shapes(1).Y    = 0.03*sin(w*tau);
 
-%Ellipse with major axis 5 cm, minor axis 3 cm
-shapes(2).name = 'Ellipse';
-shapes(2).X    = 0.03*cos(w*tau);
-shapes(2).Y    = 0.05*sin(w*tau);
+%Spade
+shapes(2).name = 'Spade';
+% shapes(2).X = sin(w*tau) * (1 + cos(w*tau)) *(1.2 + 0.3*cos(5*w*tau));
+% shapes(2).Y = cos(w*tau) * (1 + cos(w*tau)) - 0.5*sin(w*tau)^2*cos(2*w*tau);
+shapes(2).X = 16*sin(w*tau)^3*2e-3;
+shapes(2).Y = -2e-3*(13*cos(w*tau)-5*cos(2*w*tau)-2*cos(3*w*tau)-2*cos(4*w*tau));
+
+%Shift such that x and y can never be negative which was defined in Q1.1:
+for k = 1:length(shapes)
+    fXk = matlabFunction(shapes(k).X, 'Vars', tau);
+    fYk = matlabFunction(shapes(k).Y, 'Vars', tau);
+    shapes(k).X = shapes(k).X - min(fXk(t));
+    shapes(k).Y = shapes(k).Y - min(fYk(t));
+end
 
 for k=1:length(shapes)
     % Setting up derivatives using MATLAB's derivative function and symbolic
     % variable tau
+    
     dX1 = diff(shapes(k).X,tau);   d2X1 = diff(shapes(k).X,tau,2);   d3X1 = diff(shapes(k).X,tau,3);
     dY1 = diff(shapes(k).Y,tau);   d2Y1 = diff(shapes(k).Y,tau,2);   d3Y1 = diff(shapes(k).Y,tau,3);
     
