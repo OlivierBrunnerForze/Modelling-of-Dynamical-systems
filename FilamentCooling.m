@@ -10,7 +10,7 @@ Rc   = 5e-3;              % circle radius [m]
 L    = 2*pi*Rc;           % loop length [m]
 N    = 200;               % number of blocks
 ds   = L/N;               % block length [m]
-Tpr  = 5;                 % time to print the circle [s]
+Tpr  = 15;                 % time to print the circle [s]
 vn   = L/Tpr;             % For circle we assume constant nozzle speed [m/s]
 Af   = p.w^2;               % cross-section [m^2]
 
@@ -99,6 +99,8 @@ figure('Name','Selected blocks','Position',[100 100 600 400]);
 sel = round(linspace(1, N, 5));
 plot(tg, Tmap(sel,:) - 273.15, 'LineWidth', 1.2); hold on
 yline(Teq-273.15, 'k--', 'T_{eq}'); hold off; grid on
+xline(Tpr, 'k:', 't_{close}', 'LineWidth', 1.2, 'LabelVerticalAlignment', 'bottom');
+hold off; grid on
 xlabel('t [s]'); ylabel('T [°C]')
 legend(arrayfun(@(i) sprintf('block %d', i-1), sel, 'UniformOutput', false), 'Location','best')
 title('Temperature of selected blocks')
