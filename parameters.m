@@ -19,6 +19,7 @@ p.m      = 0.026;             % Tool head mass [kg]
 p.u_n = 24;                 % Nozzle voltage [V]
 p.w_n = 40;                 % Nozzle power [W]
 p.R_n = p.u_n^2/p.w_n;      % Nozzle resistance [ohm]
+p.L_n = 2.8e-3;             % Nozzle inductance [H] (Assumed the same as motor inductance)
 p.i_n = p.w_n/p.u_n;        % Nozzle current [A]
 p.C_n = 100e-6;             % Nozzle capacitor [F] (Assumption)
 p.C_tn = 14.44;             % Nozzle thermal capacity [J/K] (from 20 degC to 200degC in 65 s at 40W)
@@ -33,6 +34,7 @@ p.mu_ly = 0.001;              % Bearing friction linear y-direction [Ns/m]
 p.rho = 1240;                 % Filament density [kgm^-3]
 p.cf = 2000;                  % Filament specific heat capacity [JKg^-1K^-1] 
 p.kf = 0.15;                  % Filament thermal conductance [Wm^-1K^-1]
+p.w = 1e-3;                   % Filament width [m] (Assumption)
 
 % Additional constants
 p.Tb = 333.3;                 % Print bed temperature [K] (60degC for PLA)
