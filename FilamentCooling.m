@@ -5,14 +5,33 @@
 clear; close all; clc
 p = parameters;
 
+% Obtaining geometry from run_shape
+shape_name = 'Ellipse';
+Tpr = 15;                       % printing time [s]
+t     = linspace(0, Tpr, 5001)';
+[traj, sim] = run_shape(shape_name, p, Tpr, t);
+
+% Nozzle positions and velocities 
+xs  = sim.Xx(:,1);   ys  = sim.Xy(:,1);       % position
+vx  = sim.Xx(:,2);   vy  = sim.Xy(:,2);       % velocity
+vn_t = sqrt(vx.^2 + vy.^2);                   % nozzle speed [m/s]
+
+% calculating path lenght
+s_t = cumtrapz(t, vn_t);                      % cumtrapz is numerical integrator (s=v*t)
+L   = s_t(end);                               % total filament length [m]
+fprintf('Path length L = %.4fm, min. nozzle speed %.4f, max nozzle speed %.4f m/s (mean %.1f)\n', ...
+    L, min(vn_t), max(vn_t), L/Tpr);
+
 % Setting up print geometry and discretisation
-Rc   = 5e-3;              % circle radius [m]  
-L    = 2*pi*Rc;           % loop length [m]
 N    = 200;               % number of blocks
 ds   = L/N;               % block length [m]
-Tpr  = 15;                 % time to print the circle [s]
-vn   = L/Tpr;             % For circle we assume constant nozzle speed [m/s]
 Af   = p.w^2;               % cross-section [m^2]
+
+%circle geometry
+% Rc   = 5e-3;              % circle radius [m]  
+% L    = 2*pi*Rc;           % loop length [m]
+% Tpr  = 15;                 % time to print the circle [s]
+%vn   = L/Tpr;             % For circle we assume constant nozzle speed [m/s]
 
 % Temperatures
 Tn = 200 + 273.15;        % nozzle temperature [K] (for simplicity of this model we will give it a constant value here)
@@ -27,8 +46,14 @@ kp = p.hp*p.w*ds;           % heat transfer block to plate [W/K]
 ke = 3*p.he*p.w*ds;         % heat transfer block to environment [W/K]
 par = struct('Ct',Ct,'kc',kc,'kp',kp,'ke',ke);          % printing parameters (for functions)
 
-% Time
-tk      = (0:N-1)*ds/vn;  % activation times
+% Determining block locations and activation times
+s_err = s_t + (0:numel(s_t)-1)' * eps;              % increase perturbation eps for interpolation
+s_block = (0:N-1)' * ds;                            % position s of each block
+tk    = interp1(s_err, t, s_block, 'linear')';      % activation times t for each block through linear interpolation
+tk(1) = 0;
+
+% Simulation parameters
+% tk      = (0:N-1)*ds/vn;              % activation times
 nsam    = 6;                          % samples per segment (including both end points)
 ncol    = N*(nsam-1) + 1;             % total number of columns while printing
 tg1     = zeros(1, ncol);             % grid of sample times (while printing)
@@ -86,8 +111,10 @@ fprintf('%.0f%% of blocks within %.1f K of Teq (%.2f K) after t = %.1f s (%.1f s
         100*frac, tol, Teq, t_stop, t_stop - Tpr);
 
 % Plots
-th = 2*pi*(0:N-1)'/N;
-xc = Rc*cos(th)*1e3;  yc = Rc*sin(th)*1e3;          % block positions [mm]
+% th = 2*pi*(0:N-1)'/N;
+% xc = Rc*cos(th)*1e3;  yc = Rc*sin(th)*1e3;          % block positions [mm]
+xb = interp1(t, xs, tk)';  yb = interp1(t, ys, tk)';     % block positions [m]
+
 
 figure('Name','Filament temperature','Position',[100 100 1100 450]);
 % subplot(1,2,1)

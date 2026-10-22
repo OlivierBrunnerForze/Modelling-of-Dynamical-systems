@@ -5,7 +5,7 @@ function shapes = define_shapes(T, t)
 w = 2*pi/T;                 % angular frequency of one drawing [rad/s]
 syms tau real
 
-% Ellipse with major axis 5 cm, minor axis 3 cm
+% Ellipse with semi-major axis 5 cm, semi-minor axis 3 cm
 shapes(1).name = 'Ellipse';
 shapes(1).X    = 0.05*cos(w*tau);
 shapes(1).Y    = 0.03*sin(w*tau);
