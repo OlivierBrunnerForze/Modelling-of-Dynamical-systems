@@ -1,4 +1,4 @@
-function p = parameters
+function [p, h] = parameters
 
 %Parameter of the Core XY 3D printer model inspired by the following components (links provided in report):
 % Motor      : NEMA 17 17HS4401 (datasheet values)
@@ -50,5 +50,21 @@ p.m_eq = 2*p.J_m/p.r_m^2 + p.m;           % Equivalent mass [kg]
 p.b_x  = 8*p.mu_r + 2*p.mu_lx;            % Equivalent friction x [Ns/m]
 p.b_y  = 4*p.mu_r + 2*p.mu_ly;            % Equivalent friction y [Ns/m]
 
-end
+%% Hybrid parameters for Q3
+h.Kp      = 2000;              % position gain [V/m]
+h.U_move  = 8;                 % voltage limit for travel moves [V]
+h.U_sq    = 2;                 % voltage limit while drawing the square [V]
+h.eps_th  = 0.002;             % angle tolerance [rad] (~0.01 mm)
+h.eps_w   = 0.1;               % "motor stopped" below this speed [rad/s]
+h.T_print = 273.15 + 210;      % printing temperature [K]
+h.T_low   = 273.15 + 200;      % nozzle temperature low [K]
+h.u_hold  = sqrt(p.R_n*(h.T_print - p.Te)/p.R_tn);  % heater voltage that holds T_print [V]
+h.T_wipe  = 3;                 % wiping time [s] 
+h.T_load  = 5;                 % loading time [s] 
+h.t_C     = 5;                 % new colour requested at [s]
+h.r0      = 20;                % printing time on the first spool [s]
+h.r_new   = 8;                 % printing time on new spools [s]
+h.xc = 0.10; h.yc = 0.10; h.a = 0.05; h.b = 0.03; h.w = 2*pi/5;  % ellipse of Q1.4 for Q3.1
+h.C  = [0.08 0.08] + 0.04*[0 0; 1 0; 1 1; 0 1; 0 0];           % square corners for Q3.2
 
+end
